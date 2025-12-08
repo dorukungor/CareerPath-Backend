@@ -14,7 +14,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Service Registration
+builder.Services.AddScoped<CareerPath.Core.Interfaces.IProfessionService, CareerPath.Core.Services.ProfessionService>();
+
 var app = builder.Build();
+
+// Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    // Ensure database is created/migrated
+    context.Database.Migrate(); 
+    await CareerPath.Data.DataSeeder.SeedAsync(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
