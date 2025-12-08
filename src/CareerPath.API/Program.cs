@@ -14,8 +14,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 // Service Registration
-builder.Services.AddScoped<CareerPath.Core.Interfaces.IProfessionService, CareerPath.Core.Services.ProfessionService>();
+builder.Services.AddScoped<CareerPath.Core.Interfaces.IProfessionService, CareerPath.Data.Services.ProfessionService>();
 
 var app = builder.Build();
 
@@ -34,6 +43,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

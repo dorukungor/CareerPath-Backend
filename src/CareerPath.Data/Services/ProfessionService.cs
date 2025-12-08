@@ -1,9 +1,8 @@
 using CareerPath.Core.Entities;
 using CareerPath.Core.Interfaces;
-using CareerPath.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace CareerPath.Core.Services;
+namespace CareerPath.Data.Services;
 
 public class ProfessionService : IProfessionService
 {
