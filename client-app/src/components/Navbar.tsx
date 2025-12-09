@@ -20,11 +20,9 @@ const Navbar: React.FC = () => {
                             <Link to="/" className="text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors">
                                 Keşfet
                             </Link>
-                            {isAuthenticated && (
-                                <Link to="/dashboard" className="text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors">
-                                    Kariyerlerim
-                                </Link>
-                            )}
+                            <Link to="/dashboard" className="text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors">
+                                Kariyerlerim
+                            </Link>
                         </div>
                     </div>
 
