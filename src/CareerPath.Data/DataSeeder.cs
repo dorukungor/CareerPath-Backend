@@ -8,11 +8,7 @@ public static class DataSeeder
 {
     public static async Task SeedAsync(AppDbContext context)
     {
-        // For development: Ensuring we are updating data to match new Rich Content structure
-        // In production you typically wouldn't blindly delete.
-        // But per USER request: "Veritabanını sıfırla ki yeni veriler yüklensin"
-        
-        // Helper to generate placeholder description if missing
+        // Helper function for default descriptions
         string GetDefaultDescription(string title) => 
             $@"
 ### {title} Hakkında
@@ -26,7 +22,7 @@ Bu adım, kariyer yolculuğunuzda kritik bir öneme sahiptir. {title}, modern ya
 
 Bu yetkinliği kazanmak sizi sektörde bir adım öne taşıyacaktır. Aşağıdaki kaynakları dikkatlice incelemenizi ve uygulama yapmanızı öneririz.";
 
-        // Helper to generate default resources
+        // Helper function for default resources
         List<Resource> GetDefaultResources(string title) => new List<Resource>
         {
             new() { Title = $"{title} - Kapsamlı Rehber (Medium)", Url = "https://medium.com/topic/programming", Type = ResourceType.Article },
@@ -34,8 +30,7 @@ Bu yetkinliği kazanmak sizi sektörde bir adım öne taşıyacaktır. Aşağıd
             new() { Title = $"{title} Masterclass (Udemy)", Url = "https://www.udemy.com/courses/search/?q=" + Uri.EscapeDataString(title), Type = ResourceType.Course, IsAffiliate = true }
         };
 
-        // 1. Wipe existing data for clean start (Development only)
-        // We delete professions which cascades to steps and resources
+        // 1. Wipe existing data
         var existingProfessions = await context.Professions.ToListAsync();
         if (existingProfessions.Any())
         {
@@ -43,21 +38,23 @@ Bu yetkinliği kazanmak sizi sektörde bir adım öne taşıyacaktır. Aşağıd
             await context.SaveChangesAsync();
         }
 
-        // 2. Create Backend Developer Profession
-        var backend = new Profession
+        // ==========================================
+        // 2. Create Backend Developer (.NET)
+        // ==========================================
+        var backendNet = new Profession
         {
             Id = Guid.NewGuid(),
-            Title = "Backend Developer",
-            Slug = "backend-developer",
+            Title = "Backend Developer (.NET)",
+            Slug = "backend-developer-net",
             AvgSalary = 75000,
             DifficultyLevel = "Medium"
         };
 
-        var backendSteps = new List<RoadmapStep>
+        var backendNetSteps = new List<RoadmapStep>
         {
             new() 
             { 
-                ProfessionId = backend.Id, 
+                ProfessionId = backendNet.Id, 
                 Title = "C# Fundamentals", 
                 Summary = "C# is a modern, object-oriented, and type-safe programming language.",
                 Description = @"C# (pronounced 'See Sharp') is a modern, object-oriented, and type-safe programming language. C# enables developers to build many types of secure and robust applications that run in .NET. C# has its roots in the C family of languages and will be immediately familiar to C, C++, Java, and JavaScript programmers.
@@ -87,7 +84,7 @@ Mastering C# is the first and most critical step in your journey as a .NET Backe
             },
             new() 
             { 
-                ProfessionId = backend.Id, 
+                ProfessionId = backendNet.Id, 
                 Title = "Veritabanı ve SQL", 
                 Summary = "SQL, verinin dilidir. Backend için neden önemli olduğunu 2 dakikada okuyun.",
                 Description = @"Veri, modern dünyanın petrolüdür. SQL (Structured Query Language) ise bu petrolü çıkarıp işleyen makinedir. 
@@ -114,7 +111,7 @@ SQL bilmeden iyi bir Backend Developer olmak imkansızdır. ORM (Object-Relation
             },
             new() 
             { 
-                ProfessionId = backend.Id, 
+                ProfessionId = backendNet.Id, 
                 Title = ".NET Core Web API", 
                 Summary = "Learn how to build scalable APIs with ASP.NET Core.",
                 Description = @"ASP.NET Core is a cross-platform, high-performance, open-source framework for building modern, cloud-enabled, Internet-connected apps.
@@ -140,33 +137,64 @@ Start building your first API today!",
             },
             new()
             {
-                ProfessionId = backend.Id,
+                ProfessionId = backendNet.Id,
                 Title = "Authentication & Security",
                 OrderIndex = 4,
                 MustKnow = true
             },
             new()
             {
-                ProfessionId = backend.Id,
+                ProfessionId = backendNet.Id,
                 Title = "Microservices Architecture",
                 OrderIndex = 5,
                 MustKnow = false
             }
         };
 
-        // Fill missing fields for Backend
-        foreach (var step in backendSteps)
+        foreach (var step in backendNetSteps)
         {
-            if (string.IsNullOrEmpty(step.Summary)) step.Summary = "Bu adım kariyeriniz için kritik öneme sahiptir. Temel kavramları öğrenerek sağlam bir başlangıç yapın.";
+            if (string.IsNullOrEmpty(step.Summary)) step.Summary = "Bu adım kariyeriniz için kritik öneme sahiptir.";
             if (string.IsNullOrEmpty(step.Description)) step.Description = GetDefaultDescription(step.Title);
             if (step.Resources == null || !step.Resources.Any()) step.Resources = GetDefaultResources(step.Title);
         }
 
-        await context.Professions.AddAsync(backend);
-        await context.RoadmapSteps.AddRangeAsync(backendSteps);
+        await context.Professions.AddAsync(backendNet);
+        await context.RoadmapSteps.AddRangeAsync(backendNetSteps);
 
 
-        // 3. Create Frontend Developer Profession
+        // ==========================================
+        // 3. Create Backend Developer (Java)
+        // ==========================================
+        var backendJava = new Profession
+        {
+            Id = Guid.NewGuid(),
+            Title = "Backend Developer (Java)",
+            Slug = "backend-developer-java",
+            AvgSalary = 72000,
+            DifficultyLevel = "Hard"
+        };
+        
+        var backendJavaSteps = new List<RoadmapStep>
+        {
+            new() { ProfessionId = backendJava.Id, Title = "Java Fundamentals", Summary = "Platform independent, object-oriented language.", OrderIndex = 1, MustKnow = true },
+            new() { ProfessionId = backendJava.Id, Title = "Spring Boot", Summary = "Stand-alone, production-grade Spring based Applications.", OrderIndex = 2, MustKnow = true },
+            new() { ProfessionId = backendJava.Id, Title = "Hibernate / JPA", Summary = "Java Persistence API.", OrderIndex = 3, MustKnow = true },
+            new() { ProfessionId = backendJava.Id, Title = "Maven/Gradle", Summary = "Dependency Management.", OrderIndex = 4, MustKnow = false }
+        };
+
+        foreach (var step in backendJavaSteps)
+        {
+            if (string.IsNullOrEmpty(step.Summary)) step.Summary = "Java dünyasının bu önemli adımını keşfedin.";
+            if (string.IsNullOrEmpty(step.Description)) step.Description = GetDefaultDescription(step.Title);
+            if (step.Resources == null || !step.Resources.Any()) step.Resources = GetDefaultResources(step.Title);
+        }
+
+        await context.Professions.AddAsync(backendJava);
+        await context.RoadmapSteps.AddRangeAsync(backendJavaSteps);
+
+        // ==========================================
+        // 4. Create Frontend Developer
+        // ==========================================
         var frontend = new Profession
         {
             Id = Guid.NewGuid(),
@@ -184,14 +212,10 @@ Start building your first API today!",
             new() { ProfessionId = frontend.Id, Title = "Advanced CSS (Tailwind)", OrderIndex = 4, MustKnow = false }
         };
 
-        // Fill missing fields for Frontend
         foreach (var step in frontendSteps)
         {
             if (string.IsNullOrEmpty(step.Summary)) step.Summary = "Bu adım, frontend dünyasının temel taşlarından biridir.";
-             // Ensure description uses placeholder if short or empty (our manual ones above are short, let's keep them but fill the purely empty ones)
             if (string.IsNullOrEmpty(step.Description)) step.Description = GetDefaultDescription(step.Title);
-             // Or if description is too short, maybe replace? Lets just handle empty for now as requested.
-             
             if (step.Resources == null || !step.Resources.Any()) step.Resources = GetDefaultResources(step.Title);
         }
 
@@ -201,4 +225,3 @@ Start building your first API today!",
         await context.SaveChangesAsync();
     }
 }
-

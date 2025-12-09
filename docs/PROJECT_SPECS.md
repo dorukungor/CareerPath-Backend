@@ -1,90 +1,79 @@
 # 🌍 CAREER PATH - MASTER PROJECT SPECIFICATIONS
-**Sürüm:** 1.0.0
-**Durum:** Aktif Geliştirme
-**Vizyon:** Yazılım sektörüne girmek isteyenler için karmaşayı ortadan kaldıran, adım adım rehberlik eden ve en doğru kaynakları sunan akıllı kariyer platformu.
+**Sürüm:** 1.1.0 (MVP 2 Başlangıcı)
+**Durum:** MVP 2 Geliştirme Süreci
+**Vizyon:** Yazılım sektörüne girmek isteyenler için karmaşayı ortadan kaldıran, nokta atışı uzmanlık yolları (Backend .NET, Java Spring vb.) sunan ve kişisel ilerlemeyi takip eden akıllı kariyer platformu.
 
 ---
 
 ## 1. 🧠 YÖNETİM VE SÜREÇ (Yarkın'ın Sorumlulukları)
-
 **Rol:** Senior Project Manager & Product Owner (PM/PO)
-**Sorumlu Kişi:** Yarkın (AI Agent)
-
-Yarkın, bu projede sadece kod süreçlerini değil, ürünün gelişimini de yönetir. Görevleri:
-1.  **Süreç Takibi:** Jira board'unun her zaman güncel kalmasını sağlamak. Sprint planlamasını yapmak.
-2.  **İş Geliştirme (BizDev):** Uygulamanın nasıl para kazanabileceğini (Affiliate, Premium, Sponsorluk) düşünerek teknik altyapıyı buna göre kurgulatmak.
-3.  **Kalite Güvence:** Kerem ve Berkay'ın çıktılarının vizyona uygunluğunu denetlemek.
+* **Süreç Takibi:** Jira'nın güncel kalması.
+* **İş Geliştirme:** Üyelik ve ilerleme sisteminin kurgulanması.
+* **Kalite Güvence:** "Specialized Path" (Uzmanlaşmış Yol) stratejisinin korunması.
 
 ---
 
-## 2. 🗺️ PROJE YOL HARİTASI (DETAYLI MVP PLANLAMASI)
+## 2. 🗺️ PROJE YOL HARİTASI
 
-Proje, "Agile" prensibiyle 3 ana MVP (Minimum Viable Product) fazına bölünmüştür.
-
-### 🟢 MVP 1: "THE SKELETON" (İskelet ve Veri Sunumu)
-**Amaç:** Sistemin ayağa kalkması, veritabanı mimarisinin oturması ve public (halka açık) verinin sunulması. Üyelik sistemi YOK.
-
-#### A. Fonksiyonel Gereksinimler
-1.  **Meslek Vitrini:**
-    * Kullanıcı ana sayfada meslek kartlarını (Backend, Frontend, DevOps, Mobile vb.) görmeli.
-    * Her kartta; Başlık, Kısa Açıklama, Zorluk Derecesi, Ortalama Maaş Aralığı (Tahmini) ve İkon olmalı.
-2.  **Roadmap (Yol Haritası) Detayı:**
-    * Bir mesleğe tıklandığında dikey bir zaman çizelgesi (Timeline) açılmalı.
-    * **Adımlar:** Örn: "Algoritma" -> "C#" -> ".NET Core" -> "SQL".
-    * Her adımın bir sırası (OrderIndex) ve tahmini öğrenme süresi olmalı.
-3.  **Kaynak Kütüphanesi:**
-    * Roadmap üzerindeki bir adıma tıklandığında, o konuyu öğreten kaynaklar listelenmeli.
-    * Kaynak Tipleri: Video (YouTube), Kurs (Udemy), Makale (Medium), Dokümantasyon.
-    * *BizDev Notu:* Buradaki linkler ileride "Affiliate Link" olacak şekilde veritabanında URL yapısı esnek tutulmalı.
-
-#### B. Teknik Gereksinimler (Kerem & Berkay İçin)
-* **DB:** `Professions`, `RoadmapSteps`, `Resources` tabloları arasında Foreign Key ilişkileri (One-to-Many) kusursuz olmalı.
-* **API:** Swagger üzerinden veri girişi yapılabilmeli (Admin paneli olmadığı için).
-* **UI:** Mobil uyumlu (Responsive) tasarım şart.
+### 🟢 MVP 1: "THE SKELETON" (Tamamlandı)
+* **Durum:** ✅ Bitti.
+* **Çıktı:** Docker/Postgres altyapısı, Public Meslek Listesi, Medium tarzı detay sayfası.
 
 ---
 
-### 🟡 MVP 2: "THE USER" (Kullanıcı ve Etkileşim)
-**Amaç:** Kullanıcıyı sisteme dahil etmek ve ilerlemesini takip etmesini sağlamak.
+### 🟡 MVP 2: "THE USER & INTERACTION" (ŞU ANKİ ODAK)
+**Amaç:** Kullanıcıyı sisteme dahil etmek, çoklu kariyer takibi (Portföy Kariyer) ve ilerleme kaydı.
 
-#### A. Fonksiyonel Gereksinimler
-1.  **Kimlik Doğrulama (Auth):**
-    * Register/Login işlemleri. (JWT - JSON Web Token yapısı).
-    * Şifrelerin Hashlenerek saklanması.
-2.  **Kişisel Pano (Dashboard):**
-    * Kullanıcı ilgilendiği mesleği "Takip Et" diyebilmeli.
-3.  **İlerleme Takibi (Progress Tracking):**
-    * Roadmap üzerindeki adımların yanına "Checkbox" konulmalı.
-    * Kullanıcı "C# öğrendim" diye işaretlediğinde veritabanında bu durum saklanmalı.
-    * İlerleme çubuğu (%40 Tamamlandı) gösterilmeli.
+#### A. Stratejik Değişiklikler (Anayasa Güncellemesi)
+1.  **Uzmanlık Bazlı Yollar (Specialized Paths):**
+    * Genel "Backend Developer" başlığı yerine **"Backend Developer (.NET)"**, **"Backend Developer (Java)"** gibi spesifik teknoloji içeren yollar oluşturulacak.
+    * Böylece kullanıcı "Ben C# öğreneceğim" diyerek net bir yola girebilecek.
+2.  **Portföy Kariyer (Portfolio Career):**
+    * Bir kullanıcı aynı anda birden fazla yolu (Örn: Backend .NET + Data Science) takip edebilir.
+    * Tek bir yola hapsolmak yok.
 
-#### B. Teknik Gereksinimler
-* **DB:** `Users`, `UserProfessions` (Many-to-Many), `UserStepProgress` tabloları eklenecek.
-* **Security:** CORS ayarları ve Rate Limiting eklenecek.
+#### B. Fonksiyonel Gereksinimler
+1.  **Auth (Kimlik):** Register/Login (JWT).
+2.  **Keşfet (Explore) Sayfası:**
+    * Ziyaretçilerin tüm meslekleri gezdiği vitrin.
+    * Burada "Takip Et" (Follow) butonu olacak.
+3.  **Kariyerlerim (Dashboard) Sayfası:**
+    * Kullanıcının sadece takip ettiği mesleklerin listelendiği özel alan.
+    * Her kartta ilerleme çubuğu (Progress Bar: %45) görünecek.
+4.  **İlerleme Takibi:**
+    * Roadmap detayında her adımın yanında "Tamamladım" (Checkbox) kutucuğu olacak.
+    * İşaretlenen her adım, Dashboard'daki yüzdeyi artıracak.
 
----
-
-### 🔴 MVP 3: "THE GUIDE" (Büyüme ve İçerik)
-**Amaç:** Kullanıcıyı içeride tutmak ve gelir modeli oluşturmak.
-
-#### A. Fonksiyonel Gereksinimler
-1.  **Akıllı Arama ve Filtreleme:** "Benim matematiğim yok, hangi meslek uygun?" gibi filtreler.
-2.  **Yorum ve Puanlama:** Kullanıcılar kaynaklara (Kurslara) puan verebilmeli. "Bu video çok eski, izlemeyin" diyebilmeli.
-3.  **Blog / Sektör Haberleri:** SEO uyumlu içerik alanı.
-
----
-
-## 3. 📊 VERİTABANI MODELİ TASLAĞI (Kerem İçin Referans)
-
-**Yarkın'ın Notu:** Kerem, veritabanını tasarlarken bu ilişki yapısına sadık kalmalı.
-
-* **Profession:** `Id (GUID)`, `Title`, `Slug` (SEO için), `AvgSalary`, `DifficultyLevel`
-* **RoadmapStep:** `Id`, `ProfessionId`, `Title`, `Description`, `OrderIndex`, `MustKnow` (Zorunlu mu?)
-* **Resource:** `Id`, `StepId`, `Url`, `IsAffiliate` (Bool), `ClickCount` (Analiz için)
+#### C. Teknik Gereksinimler
+* **Backend:** JWT Authentication, Many-to-Many ilişki yönetimi.
+* **Frontend:** Protected Routes (Giriş yapmayanı Dashboard'a sokma), Context API ile User State yönetimi.
 
 ---
 
-## 4. 📈 İŞ GELİŞTİRME NOTLARI (Yarkın'ın Takibi İçin)
+### 🔴 MVP 3: "THE GUIDE" (Gelecek)
+* Akıllı İçerik Eşleştirme (Tag-Based).
+* Kullanıcıya özel kurs önerileri.
 
-* **KPI (Başarı Kriteri):** MVP 1 sonunda sistemde en az 5 farklı meslek ve toplam 50+ kaynak tanımlı olmalı.
-* **Gelir Stratejisi:** Kaynak linkleri verilirken "Udemy" veya "Coursera" gibi platformların referans parametrelerini (ref_id) saklayabilecek bir yapı kurulmalı.
+---
+
+## 3. 📊 VERİTABANI MODELİ TASLAĞI (Kerem İçin)
+
+**Mevcut Tablolar:**
+* `Professions`: (Güncelleme: Title alanları "Backend (.NET)" gibi spesifik olacak).
+* `RoadmapSteps`: (Summary, Description eklendi).
+* `Resources`: (Type, Url eklendi).
+
+**MVP 2 İle Eklenecek Yeni Tablolar:**
+1.  **`AppUser` (Users):**
+    * `Id (Guid)`, `Email`, `PasswordHash`, `FullName`, `CreatedAt`.
+2.  **`UserProfessions` (Takip Listesi - Many-to-Many):**
+    * `UserId` (FK), `ProfessionId` (FK), `StartedAt`, `IsCompleted`.
+    * *Mantık:* Bir kullanıcı birden çok mesleği takip edebilir.
+3.  **`UserStepProgress` (İlerleme Durumu):**
+    * `UserId` (FK), `RoadmapStepId` (FK), `CompletedAt`.
+    * *Mantık:* Kullanıcının hangi adımlara "Tik" attığını tutar.
+
+---
+
+## 4. 📈 İŞ GELİŞTİRME NOTLARI
+* **User Retention (Tutundurma):** Kullanıcının Dashboard'a geri gelmesi için ilerleme çubuğu (% doluluk oranı) motive edici şekilde tasarlanmalı.
