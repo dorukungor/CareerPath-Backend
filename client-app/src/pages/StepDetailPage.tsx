@@ -67,15 +67,35 @@ export default function StepDetailPage() {
                 <main>
                     {/* Header Section */}
                     <div className="mb-12 border-b border-gray-100 pb-8">
-                        <div className="flex items-center gap-3 mb-6">
-                            <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                Step {step.orderIndex}
-                            </span>
-                            {step.mustKnow && (
-                                <span className="bg-rose-50 text-rose-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    Must Know
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="flex items-center gap-3">
+                                <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                    Step {step.orderIndex}
                                 </span>
-                            )}
+                                {step.mustKnow && (
+                                    <span className="bg-rose-50 text-rose-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                        Must Know
+                                    </span>
+                                )}
+                            </div>
+
+                            <label className="flex items-center gap-3 cursor-pointer group select-none">
+                                <div className="relative">
+                                    <input
+                                        type="checkbox"
+                                        className="peer sr-only"
+                                        onChange={(e) => console.log('Tıklandı: ', e.target.checked)}
+                                    />
+                                    <div className="w-8 h-8 rounded-lg border-2 border-slate-300 peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-white transform scale-0 peer-checked:scale-100 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span className="text-sm font-medium text-slate-500 group-hover:text-slate-800 transition-colors">
+                                    Tamamlandı Olarak İşaretle
+                                </span>
+                            </label>
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
