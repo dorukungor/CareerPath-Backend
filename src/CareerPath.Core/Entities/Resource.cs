@@ -9,6 +9,12 @@ public class Resource
     public Guid StepId { get; set; }
 
     [Required]
+    [MaxLength(200)]
+    public string Title { get; set; } = string.Empty;
+
+    public CareerPath.Core.Enums.ResourceType Type { get; set; }
+
+    [Required]
     [MaxLength(500)]
     public string Url { get; set; } = string.Empty;
 

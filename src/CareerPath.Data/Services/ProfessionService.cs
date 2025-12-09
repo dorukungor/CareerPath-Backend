@@ -55,6 +55,8 @@ public class ProfessionService : IProfessionService
                     Resources = s.Resources.Select(r => new ResourceDto
                     {
                         Id = r.Id,
+                        Title = r.Title,
+                        Type = r.Type.ToString(),
                         Url = r.Url,
                         IsAffiliate = r.IsAffiliate
                     }).ToList()
