@@ -70,8 +70,11 @@ const StepDetailModal: React.FC<StepDetailModalProps> = ({ isOpen, onClose, step
 
                     {/* Content (Description) */}
                     <div className="px-4 py-6 sm:p-8">
-                        <div className="prose prose-indigo max-w-none text-gray-600 leading-relaxed text-lg">
-                            <p className="whitespace-pre-line">{step.description || "No description details available for this step."}</p>
+                        {/* Debugging styling */}
+                        <div className="text-gray-800 text-lg leading-relaxed">
+                            <p className="whitespace-pre-line border border-red-500 p-2">
+                                {step.description ? step.description : "No description (fallback)"}
+                            </p>
                         </div>
                     </div>
 
