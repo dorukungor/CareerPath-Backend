@@ -16,10 +16,11 @@ export default function ProfessionDetail() {
     const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
+        console.log("ProfessionDetail mounted. ID:", id); // DEBUG
         if (id) {
-            // Fetch profession detailed info
             getProfessionById(id)
                 .then(data => {
+                    console.log("Fetched profession data:", data); // DEBUG
                     setProfession(data);
                     setLoading(false);
                     // Check if already following (if user is logged in)
@@ -32,6 +33,9 @@ export default function ProfessionDetail() {
                     setError('Failed to load profession details.');
                     setLoading(false);
                 });
+        } else {
+            console.warn("No ID provided to ProfessionDetail"); // DEBUG
+            setLoading(false);
         }
     }, [id, user]);
 
@@ -109,8 +113,8 @@ export default function ProfessionDetail() {
                             onClick={handleFollowToggle}
                             disabled={isProcessing}
                             className={`px-6 py-2 rounded-lg font-medium shadow-sm transition-all ${isFollowing
-                                    ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
-                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
+                                ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                                : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
                                 }`}
                         >
                             {isProcessing ? 'Processing...' : isFollowing ? 'Takipten Çık' : 'Takip Et'}
