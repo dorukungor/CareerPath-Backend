@@ -54,9 +54,23 @@ export default function StepDetailPage() {
     };
 
     if (loading) {
-        // ... existing loading code ...
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
+            </div>
+        );
     }
-    // ... existing error code ...
+
+    if (error || !step || !profession) {
+        return (
+            <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+                <p className="text-rose-500 text-lg mb-6">{error || 'Content not found'}</p>
+                <Link to={`/profession/${professionId}`} className="text-slate-800 hover:underline">
+                    ← Back to Roadmap
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white">
@@ -97,8 +111,8 @@ export default function StepDetailPage() {
                                             onChange={handleToggle}
                                         />
                                         <div className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${isCompleted
-                                                ? 'bg-emerald-500 border-emerald-500'
-                                                : 'border-slate-300 hover:border-emerald-400'
+                                            ? 'bg-emerald-500 border-emerald-500'
+                                            : 'border-slate-300 hover:border-emerald-400'
                                             }`}>
                                             <svg className={`w-5 h-5 text-white transform transition-transform ${isCompleted ? 'scale-100' : 'scale-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
