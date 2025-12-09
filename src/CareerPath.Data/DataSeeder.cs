@@ -48,7 +48,8 @@ public static class DataSeeder
             { 
                 ProfessionId = backend.Id, 
                 Title = "C# Fundamentals", 
-                Description = "C# is a modern, object-oriented, and type-safe programming language. C# enables developers to build many types of secure and robust applications that run in .NET.", 
+                Summary = "C# is a modern, object-oriented, and type-safe programming language.",
+                Description = "C# enables developers to build many types of secure and robust applications that run in .NET. It is heavily used in enterprise updates.", 
                 OrderIndex = 1, 
                 MustKnow = true,
                 Resources = new List<Resource>
@@ -61,6 +62,7 @@ public static class DataSeeder
             { 
                 ProfessionId = backend.Id, 
                 Title = "Veritabanı ve SQL", 
+                Summary = "SQL, verinin dilidir. Backend için neden önemli olduğunu 2 dakikada okuyun.",
                 Description = "Veri, modern dünyanın petrolüdür. SQL (Structured Query Language) ise bu petrolü çıkarıp işleyen makinedir. Bir Backend geliştirici olarak veriyi nasıl saklayacağınızı, güncelleyeceğinizi ve sorgulayacağınızı bilmek zorundasınız. İlişkisel veritabanları (PostgreSQL, SQL Server) yazılım dünyasının belkemiğidir. Transaction yönetimi, Indexing ve Normalizasyon konularına hakim olmalısınız.", 
                 OrderIndex = 2, 
                 MustKnow = true,
@@ -75,6 +77,7 @@ public static class DataSeeder
             { 
                 ProfessionId = backend.Id, 
                 Title = ".NET Core Web API", 
+                Summary = "Learn how to build scalable APIs with ASP.NET Core.",
                 Description = "ASP.NET Core is a cross-platform, high-performance, open-source framework for building modern, cloud-enabled, Internet-connected apps.", 
                 OrderIndex = 3, 
                 MustKnow = true,
@@ -101,8 +104,8 @@ public static class DataSeeder
             };
             var frontendSteps = new List<RoadmapStep>
             {
-                new() { ProfessionId = frontend.Id, Title = "HTML & CSS", Description = "Structure and style web pages.", OrderIndex = 1, MustKnow = true },
-                new() { ProfessionId = frontend.Id, Title = "JavaScript", Description = "Validations, DOM manipulation.", OrderIndex = 2, MustKnow = true }
+                new() { ProfessionId = frontend.Id, Title = "HTML & CSS", Summary = "Building blocks of web", Description = "Structure and style web pages.", OrderIndex = 1, MustKnow = true },
+                new() { ProfessionId = frontend.Id, Title = "JavaScript", Summary = "Logic of web", Description = "Validations, DOM manipulation.", OrderIndex = 2, MustKnow = true }
             };
             await context.Professions.AddAsync(frontend);
             await context.RoadmapSteps.AddRangeAsync(frontendSteps);

@@ -49,6 +49,7 @@ public class ProfessionService : IProfessionService
                 {
                     Id = s.Id,
                     Title = s.Title,
+                    Summary = s.Summary,
                     Description = s.Description,
                     OrderIndex = s.OrderIndex,
                     MustKnow = s.MustKnow,
