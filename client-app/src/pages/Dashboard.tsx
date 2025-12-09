@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
                         <div key={prof.professionId} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                             <div className="flex justify-between items-start mb-4">
                                 <h3 className="text-xl font-bold text-gray-900 hover:text-emerald-600 transition-colors">
-                                    <Link to={`/profession/${prof.slug}`}>{prof.title}</Link>
+                                    <Link to={`/profession/${prof.professionId}`}>{prof.title}</Link>
                                 </h3>
                                 {prof.isCompleted && (
                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
                             <div className="flex justify-between items-center text-sm text-gray-500 mt-4 pt-4 border-t border-gray-100">
                                 <span>Başlangıç: {new Date(prof.startedAt).toLocaleDateString('tr-TR')}</span>
                                 <Link
-                                    to={`/profession/${prof.slug}`}
+                                    to={`/profession/${prof.professionId}`}
                                     className="text-emerald-600 hover:text-emerald-700 font-medium"
                                 >
                                     Devam Et →
