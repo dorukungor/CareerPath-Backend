@@ -5,5 +5,5 @@ namespace CareerPath.Core.Interfaces;
 public interface IProfessionService
 {
     Task<IEnumerable<ProfessionDto>> GetAllAsync();
-    Task<ProfessionDto?> GetByIdAsync(Guid id);
+    Task<ProfessionDto?> GetByIdAsync(Guid id, Guid? userId = null);
 }

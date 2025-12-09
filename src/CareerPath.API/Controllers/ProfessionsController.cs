@@ -24,7 +24,15 @@ public class ProfessionsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _service.GetByIdAsync(id);
+        // Token'dan UserId'yi al (eğer varsa)
+        Guid? userId = null;
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var parsedId))
+        {
+            userId = parsedId;
+        }
+
+        var result = await _service.GetByIdAsync(id, userId);
         if (result == null) return NotFound();
         return Ok(result);
     }

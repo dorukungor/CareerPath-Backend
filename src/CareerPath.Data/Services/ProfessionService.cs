@@ -27,7 +27,7 @@ public class ProfessionService : IProfessionService
             .ToListAsync();
     }
 
-    public async Task<ProfessionDto?> GetByIdAsync(Guid id)
+    public async Task<ProfessionDto?> GetByIdAsync(Guid id, Guid? userId = null)
     {
         var profession = await _context.Professions
             .Include(p => p.RoadmapSteps)
@@ -35,6 +35,17 @@ public class ProfessionService : IProfessionService
             .FirstOrDefaultAsync(p => p.Id == id);
             
         if (profession == null) return null;
+
+        // Kullanıcı giriş yapmışsa tamamladığı adımların ID'lerini çekiyoruz
+        var completedStepIds = new HashSet<Guid>();
+        if (userId.HasValue)
+        {
+            completedStepIds = (await _context.UserStepProgresses
+                .Where(usp => usp.UserId == userId.Value && usp.RoadmapStep.ProfessionId == id)
+                .Select(usp => usp.RoadmapStepId)
+                .ToListAsync())
+                .ToHashSet();
+        }
 
         return new ProfessionDto
         {
@@ -53,6 +64,7 @@ public class ProfessionService : IProfessionService
                     Description = s.Description,
                     OrderIndex = s.OrderIndex,
                     MustKnow = s.MustKnow,
+                    IsCompleted = completedStepIds.Contains(s.Id),
                     Resources = s.Resources.Select(r => new ResourceDto
                     {
                         Id = r.Id,

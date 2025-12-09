@@ -8,5 +8,6 @@ public class RoadmapStepDto
     public string Description { get; set; } = string.Empty;
     public int OrderIndex { get; set; }
     public bool MustKnow { get; set; }
+    public bool IsCompleted { get; set; }
     public List<ResourceDto> Resources { get; set; } = new();
 }
