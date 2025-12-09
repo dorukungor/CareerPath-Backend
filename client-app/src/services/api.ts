@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Profession } from '../types/profession';
+import type { Profession } from '../types/profession';
 
 // Note: Using port 5038 as confirmed by the running backend instance
 const API_URL = 'http://localhost:5038/api';

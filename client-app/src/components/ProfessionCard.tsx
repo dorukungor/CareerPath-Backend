@@ -1,5 +1,6 @@
 import React from 'react';
-import { Profession } from '../types/profession';
+import type { Profession } from '../types/profession';
+import { Link } from 'react-router-dom';
 
 interface ProfessionCardProps {
     profession: Profession;
@@ -23,7 +24,7 @@ const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
+        <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group flex flex-col h-full">
             {/* Header / Image Placeholder */}
             <div className={`h-32 bg-gradient-to-r ${getGradient(profession.title)} flex items-center justify-center relative p-6`}>
                 <h3 className="text-white text-2xl font-bold tracking-tight text-center drop-shadow-md">
@@ -31,7 +32,7 @@ const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession }) => {
                 </h3>
             </div>
 
-            <div className="p-6">
+            <div className="p-6 flex flex-col flex-grow">
                 <div className="flex justify-between items-center mb-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getDifficultyColor(profession.difficultyLevel)}`}>
                         {profession.difficultyLevel}
@@ -50,12 +51,14 @@ const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession }) => {
                     </p>
                 </div>
 
-                <button className="mt-6 w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition border border-gray-200 group-hover:border-blue-300 group-hover:text-blue-600 flex items-center justify-center gap-2">
-                    View Roadmap
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+                <div className="mt-auto pt-6">
+                    <Link to={`/roadmap/${profession.id}`} className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition border border-gray-200 group-hover:border-blue-300 group-hover:text-blue-600 flex items-center justify-center gap-2">
+                        View Roadmap
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                    </Link>
+                </div>
             </div>
         </div>
     );

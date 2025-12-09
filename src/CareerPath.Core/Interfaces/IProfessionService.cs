@@ -1,9 +1,9 @@
-using CareerPath.Core.Entities;
+using CareerPath.Core.DTOs;
 
 namespace CareerPath.Core.Interfaces;
 
 public interface IProfessionService
 {
-    Task<IEnumerable<Profession>> GetAllAsync();
-    Task<Profession?> GetByIdAsync(Guid id);
+    Task<IEnumerable<ProfessionDto>> GetAllAsync();
+    Task<ProfessionDto?> GetByIdAsync(Guid id);
 }

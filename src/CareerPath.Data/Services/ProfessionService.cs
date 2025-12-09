@@ -1,4 +1,4 @@
-using CareerPath.Core.Entities;
+using CareerPath.Core.DTOs;
 using CareerPath.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,18 +13,52 @@ public class ProfessionService : IProfessionService
         _context = context;
     }
 
-    public async Task<IEnumerable<Profession>> GetAllAsync()
+    public async Task<IEnumerable<ProfessionDto>> GetAllAsync()
     {
         return await _context.Professions
-            .Include(p => p.RoadmapSteps.OrderBy(s => s.OrderIndex))
+            .Select(p => new ProfessionDto
+            {
+                Id = p.Id,
+                Title = p.Title,
+                Slug = p.Slug,
+                AvgSalary = p.AvgSalary,
+                DifficultyLevel = p.DifficultyLevel
+            })
             .ToListAsync();
     }
 
-    public async Task<Profession?> GetByIdAsync(Guid id)
+    public async Task<ProfessionDto?> GetByIdAsync(Guid id)
     {
-        return await _context.Professions
-            .Include(p => p.RoadmapSteps.OrderBy(s => s.OrderIndex))
-            .ThenInclude(s => s.Resources)
+        var profession = await _context.Professions
+            .Include(p => p.RoadmapSteps)
+            .ThenInclude(rs => rs.Resources)
             .FirstOrDefaultAsync(p => p.Id == id);
+            
+        if (profession == null) return null;
+
+        return new ProfessionDto
+        {
+            Id = profession.Id,
+            Title = profession.Title,
+            Slug = profession.Slug,
+            AvgSalary = profession.AvgSalary,
+            DifficultyLevel = profession.DifficultyLevel,
+            RoadmapSteps = profession.RoadmapSteps
+                .OrderBy(s => s.OrderIndex)
+                .Select(s => new RoadmapStepDto
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Description = s.Description,
+                    OrderIndex = s.OrderIndex,
+                    MustKnow = s.MustKnow,
+                    Resources = s.Resources.Select(r => new ResourceDto
+                    {
+                        Id = r.Id,
+                        Url = r.Url,
+                        IsAffiliate = r.IsAffiliate
+                    }).ToList()
+                }).ToList()
+        };
     }
 }
