@@ -1,5 +1,6 @@
-using CareerPath.Data;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +29,33 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
+// Authentication Configuration
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]!);
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"]
+    };
+});
+
 // Service Registration
 builder.Services.AddScoped<CareerPath.Core.Interfaces.IProfessionService, CareerPath.Data.Services.ProfessionService>();
+builder.Services.AddScoped<CareerPath.Core.Interfaces.IAuthService, CareerPath.Data.Services.AuthService>();
 
 var app = builder.Build();
 
@@ -53,6 +79,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); // Added
 app.UseAuthorization();
 
 app.MapControllers();
