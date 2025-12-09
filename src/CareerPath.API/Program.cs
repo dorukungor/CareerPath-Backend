@@ -58,6 +58,7 @@ builder.Services.AddAuthentication(x =>
 // Service Registration
 builder.Services.AddScoped<CareerPath.Core.Interfaces.IProfessionService, CareerPath.Data.Services.ProfessionService>();
 builder.Services.AddScoped<CareerPath.Core.Interfaces.IAuthService, CareerPath.Data.Services.AuthService>();
+builder.Services.AddScoped<CareerPath.Core.Interfaces.IUserProfessionService, CareerPath.Data.Services.UserProfessionService>();
 
 var app = builder.Build();
 
