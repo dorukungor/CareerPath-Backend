@@ -57,4 +57,9 @@ export const getMyProfessions = async (): Promise<UserProfessionDto[]> => {
     return response.data;
 };
 
+export const toggleStepProgress = async (stepId: string): Promise<{ isCompleted: boolean }> => {
+    const response = await api.post<{ isCompleted: boolean }>(`/progress/${stepId}`);
+    return response.data;
+};
+
 export default api;

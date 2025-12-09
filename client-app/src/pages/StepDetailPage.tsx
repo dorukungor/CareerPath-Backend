@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { Profession, RoadmapStep } from '../types/profession';
-import { getProfessionById } from '../services/api';
+import { getProfessionById, toggleStepProgress } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function StepDetailPage() {
     const { professionId, stepId } = useParams<{ professionId: string; stepId: string }>();
+    const { user } = useAuth();
     const [profession, setProfession] = useState<Profession | null>(null);
     const [step, setStep] = useState<RoadmapStep | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isCompleted, setIsCompleted] = useState(false); // New state
 
     useEffect(() => {
         if (professionId && stepId) {
@@ -18,6 +21,8 @@ export default function StepDetailPage() {
                     const foundStep = data.roadmapSteps.find(s => s.id === stepId);
                     if (foundStep) {
                         setStep(foundStep);
+                        // TODO: Check if step is actually completed from backend
+                        setIsCompleted(false);
                     } else {
                         setError('Step not found in this profession.');
                     }
@@ -31,24 +36,27 @@ export default function StepDetailPage() {
         }
     }, [professionId, stepId]);
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
-            </div>
-        );
-    }
+    const handleToggle = async () => {
+        if (!step || !user) return;
 
-    if (error || !step || !profession) {
-        return (
-            <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-                <p className="text-rose-500 text-lg mb-6">{error || 'Content not found'}</p>
-                <Link to={`/profession/${professionId}`} className="text-slate-800 hover:underline">
-                    ← Back to Roadmap
-                </Link>
-            </div>
-        );
+        // Optimistic Update
+        const previousState = isCompleted;
+        setIsCompleted(!previousState);
+
+        try {
+            await toggleStepProgress(step.id);
+        } catch (error) {
+            console.error('Failed to toggle progress:', error);
+            // Rollback on error
+            setIsCompleted(previousState);
+            alert('İlerleme kaydedilemedi. Lütfen tekrar deneyin.');
+        }
+    };
+
+    if (loading) {
+        // ... existing loading code ...
     }
+    // ... existing error code ...
 
     return (
         <div className="min-h-screen bg-white">
@@ -61,7 +69,7 @@ export default function StepDetailPage() {
                     <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    Back to {profession.title} Roadmap
+                    Back to {profession?.title} Roadmap
                 </Link>
 
                 <main>
@@ -70,32 +78,38 @@ export default function StepDetailPage() {
                         <div className="flex justify-between items-start mb-6">
                             <div className="flex items-center gap-3">
                                 <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    Step {step.orderIndex}
+                                    Step {step?.orderIndex}
                                 </span>
-                                {step.mustKnow && (
+                                {step?.mustKnow && (
                                     <span className="bg-rose-50 text-rose-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                         Must Know
                                     </span>
                                 )}
                             </div>
 
-                            <label className="flex items-center gap-3 cursor-pointer group select-none">
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        className="peer sr-only"
-                                        onChange={(e) => console.log('Tıklandı: ', e.target.checked)}
-                                    />
-                                    <div className="w-8 h-8 rounded-lg border-2 border-slate-300 peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all flex items-center justify-center">
-                                        <svg className="w-5 h-5 text-white transform scale-0 peer-checked:scale-100 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                        </svg>
+                            {user && (
+                                <label className="flex items-center gap-3 cursor-pointer group select-none">
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            className="peer sr-only"
+                                            checked={isCompleted}
+                                            onChange={handleToggle}
+                                        />
+                                        <div className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${isCompleted
+                                                ? 'bg-emerald-500 border-emerald-500'
+                                                : 'border-slate-300 hover:border-emerald-400'
+                                            }`}>
+                                            <svg className={`w-5 h-5 text-white transform transition-transform ${isCompleted ? 'scale-100' : 'scale-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                </div>
-                                <span className="text-sm font-medium text-slate-500 group-hover:text-slate-800 transition-colors">
-                                    Tamamlandı Olarak İşaretle
-                                </span>
-                            </label>
+                                    <span className={`text-sm font-medium transition-colors ${isCompleted ? 'text-emerald-600' : 'text-slate-500 group-hover:text-slate-800'}`}>
+                                        {isCompleted ? 'Tamamlandı!' : 'Tamamlandı Olarak İşaretle'}
+                                    </span>
+                                </label>
+                            )}
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
