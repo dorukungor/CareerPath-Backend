@@ -1,7 +1,8 @@
+```javascript
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { Profession, RoadmapStep } from '../types/profession';
-import { getProfessionById, toggleStepProgress } from '../services/api';
+import { getProfessionById, toggleStepProgress, getMyProfessions } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function StepDetailPage() {
@@ -12,31 +13,49 @@ export default function StepDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [isCompleted, setIsCompleted] = useState(false); // New state
+    const [isFollowing, setIsFollowing] = useState(false);
 
     useEffect(() => {
         if (professionId && stepId) {
-            getProfessionById(professionId)
-                .then(data => {
-                    setProfession(data);
-                    const foundStep = data.roadmapSteps.find(s => s.id === stepId);
+            const fetchData = async () => {
+                try {
+                    // Fetch Profession & Step
+                    const professionData = await getProfessionById(professionId);
+                    setProfession(professionData);
+                    
+                    const foundStep = professionData.roadmapSteps.find(s => s.id === stepId);
                     if (foundStep) {
                         setStep(foundStep);
                         setIsCompleted(foundStep.isCompleted);
                     } else {
                         setError('Step not found in this profession.');
                     }
-                    setLoading(false);
-                })
-                .catch(err => {
-                    console.error('Failed to fetch profession:', err);
+
+                    // Check if user is following this profession
+                    if (user) {
+                        try {
+                            const myProfs = await getMyProfessions();
+                            const following = myProfs.some(p => p.professionId === professionId);
+                            setIsFollowing(following);
+                        } catch (err) {
+                            console.error('Failed to check following status', err);
+                        }
+                    }
+
+                } catch (err) {
+                    console.error('Failed to fetch details:', err);
                     setError('Failed to load details.');
+                } finally {
                     setLoading(false);
-                });
+                }
+            };
+
+            fetchData();
         }
-    }, [professionId, stepId]);
+    }, [professionId, stepId, user]);
 
     const handleToggle = async () => {
-        if (!step || !user) return;
+        if (!step || !user || !isFollowing) return;
 
         // Optimistic Update
         const previousState = isCompleted;
@@ -64,7 +83,7 @@ export default function StepDetailPage() {
         return (
             <div className="max-w-3xl mx-auto px-4 py-20 text-center">
                 <p className="text-rose-500 text-lg mb-6">{error || 'Content not found'}</p>
-                <Link to={`/profession/${professionId}`} className="text-slate-800 hover:underline">
+                <Link to={`/ profession / ${ professionId } `} className="text-slate-800 hover:underline">
                     ← Back to Roadmap
                 </Link>
             </div>
@@ -76,7 +95,7 @@ export default function StepDetailPage() {
             {/* Header / Breadcrumb */}
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
                 <Link
-                    to={`/profession/${professionId}`}
+                    to={`/ profession / ${ professionId } `}
                     className="group inline-flex items-center text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors mb-8"
                 >
                     <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,29 +119,36 @@ export default function StepDetailPage() {
                                 )}
                             </div>
 
-                            {user && (
-                                <label className="flex items-center gap-3 cursor-pointer group select-none">
-                                    <div className="relative">
-                                        <input
-                                            type="checkbox"
-                                            className="peer sr-only"
-                                            checked={isCompleted}
-                                            onChange={handleToggle}
-                                        />
-                                        <div className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${isCompleted
-                                            ? 'bg-emerald-500 border-emerald-500'
-                                            : 'border-slate-300 hover:border-emerald-400'
-                                            }`}>
-                                            <svg className={`w-5 h-5 text-white transform transition-transform ${isCompleted ? 'scale-100' : 'scale-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                            </svg>
+                            {user ? (
+                                isFollowing ? (
+                                    <label className="flex items-center gap-3 cursor-pointer group select-none">
+                                        <div className="relative">
+                                            <input
+                                                type="checkbox"
+                                                className="peer sr-only"
+                                                checked={isCompleted}
+                                                onChange={handleToggle}
+                                            />
+                                            <div className={`w - 8 h - 8 rounded - lg border - 2 transition - all flex items - center justify - center ${
+    isCompleted
+        ? 'bg-emerald-500 border-emerald-500'
+        : 'border-slate-300 hover:border-emerald-400'
+} `}>
+                                                <svg className={`w - 5 h - 5 text - white transform transition - transform ${ isCompleted ? 'scale-100' : 'scale-0' } `} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span className={`text-sm font-medium transition-colors ${isCompleted ? 'text-emerald-600' : 'text-slate-500 group-hover:text-slate-800'}`}>
-                                        {isCompleted ? 'Tamamlandı!' : 'Tamamlandı Olarak İşaretle'}
+                                        <span className={`text - sm font - medium transition - colors ${ isCompleted ? 'text-emerald-600' : 'text-slate-500 group-hover:text-slate-800' } `}>
+                                            {isCompleted ? 'Tamamlandı!' : 'Tamamlandı Olarak İşaretle'}
+                                        </span>
+                                    </label>
+                                ) : (
+                                    <span className="text-xs text-slate-400 italic bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                                        İlerlemeyi kaydetmek için takip etmelisin
                                     </span>
-                                </label>
-                            )}
+                                )
+                            ) : null}
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
