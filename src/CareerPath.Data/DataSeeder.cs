@@ -49,7 +49,23 @@ public static class DataSeeder
                 ProfessionId = backend.Id, 
                 Title = "C# Fundamentals", 
                 Summary = "C# is a modern, object-oriented, and type-safe programming language.",
-                Description = "C# enables developers to build many types of secure and robust applications that run in .NET. It is heavily used in enterprise updates.", 
+                Description = @"C# (pronounced 'See Sharp') is a modern, object-oriented, and type-safe programming language. C# enables developers to build many types of secure and robust applications that run in .NET. C# has its roots in the C family of languages and will be immediately familiar to C, C++, Java, and JavaScript programmers.
+
+### Why C#?
+C# is the primary language for .NET development. It is versatile, capable of building:
+- **Web Applications**: Using ASP.NET Core
+- **Desktop Applications**: Using Windows Presentation Foundation (WPF) or WinForms
+- **Mobile Apps**: Using Xamarin or .NET MAUI
+- **Cloud Services**: Azure Functions and microservices
+- **Games**: Using the Unity game engine
+
+### Key Features
+1. **Type Safety**: Prevents type errors at compile time.
+2. **Garbage Collection**: Automatic memory management.
+3. **Asynchronous Programming**: Built-in support for async/await patterns.
+4. **LINQ**: Language Integrated Query for querying data from different sources.
+
+Mastering C# is the first and most critical step in your journey as a .NET Backend Developer.", 
                 OrderIndex = 1, 
                 MustKnow = true,
                 Resources = new List<Resource>
@@ -63,7 +79,19 @@ public static class DataSeeder
                 ProfessionId = backend.Id, 
                 Title = "Veritabanı ve SQL", 
                 Summary = "SQL, verinin dilidir. Backend için neden önemli olduğunu 2 dakikada okuyun.",
-                Description = "Veri, modern dünyanın petrolüdür. SQL (Structured Query Language) ise bu petrolü çıkarıp işleyen makinedir. Bir Backend geliştirici olarak veriyi nasıl saklayacağınızı, güncelleyeceğinizi ve sorgulayacağınızı bilmek zorundasınız. İlişkisel veritabanları (PostgreSQL, SQL Server) yazılım dünyasının belkemiğidir. Transaction yönetimi, Indexing ve Normalizasyon konularına hakim olmalısınız.", 
+                Description = @"Veri, modern dünyanın petrolüdür. SQL (Structured Query Language) ise bu petrolü çıkarıp işleyen makinedir. 
+
+### SQL Nedir?
+SQL, ilişkisel veritabanlarını yönetmek ve tasarlamak için kullanılan standart bir dildir. Bir Backend geliştirici olarak, uygulamanızın verilerini nasıl saklayacağınızı, güncelleyeceğinizi ve sorgulayacağınızı bilmek zorundasınız.
+
+### Özellikler ve Kavramlar
+- **Relational Databases (RDBMS)**: Verilerin tablolar halinde tutulduğu ve birbirleriyle ilişkilendirildiği sistemlerdir (PostgreSQL, MySQL, SQL Server).
+- **CRUD Operasyonları**: Create (Oluştur), Read (Oku), Update (Güncelle), Delete (Sil).
+- **Normalization**: Veri tekrarını önlemek ve veritabanı bütünlüğünü sağlamak için yapılan düzenlemeler.
+- **Indexing**: Sorgu performansını artırmak için kullanılan yapılar.
+- **Transactions (ACID)**: Veri bütünlüğünü garanti altına alan işlem blokları.
+
+SQL bilmeden iyi bir Backend Developer olmak imkansızdır. ORM (Object-Relational Mapping) araçları (Entity Framework gibi) işinizi kolaylaştırsa da, alt tarafta dönen SQL'i anlamak performans optimizasyonu için kritiktir.", 
                 OrderIndex = 2, 
                 MustKnow = true,
                 Resources = new List<Resource>
