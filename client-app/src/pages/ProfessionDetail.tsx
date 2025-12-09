@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import type { Profession, RoadmapStep } from '../types/profession';
+import type { Profession } from '../types/profession';
 import { getProfessionById } from '../services/api';
-import StepDetailModal from '../components/StepDetailModal';
 
 export default function ProfessionDetail() {
     const { id } = useParams<{ id: string }>();
     const [profession, setProfession] = useState<Profession | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
-    // Modal State
-    const [selectedStep, setSelectedStep] = useState<RoadmapStep | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -28,16 +23,6 @@ export default function ProfessionDetail() {
                 });
         }
     }, [id]);
-
-    const openStepDetail = (step: RoadmapStep) => {
-        setSelectedStep(step);
-        setIsModalOpen(true);
-    };
-
-    const closeStepDetail = () => {
-        setIsModalOpen(false);
-        setTimeout(() => setSelectedStep(null), 300); // Clear after animation roughly
-    };
 
     if (loading) {
         return (
@@ -88,10 +73,10 @@ export default function ProfessionDetail() {
                             {index + 1}
                         </div>
 
-                        {/* Content Card */}
-                        <div
-                            className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
-                            onClick={() => openStepDetail(step)}
+                        {/* Content Card - Using Link for navigation */}
+                        <Link
+                            to={`/profession/${profession.id}/step/${step.id}`}
+                            className="block bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                         >
                             {/* Step Header */}
                             <div className="bg-gradient-to-r from-indigo-50 to-white px-6 py-4 border-b border-indigo-50 flex justify-between items-center">
@@ -113,17 +98,15 @@ export default function ProfessionDetail() {
                                     <span className="text-sm text-gray-400 font-medium">
                                         ⏱️ 5 min read
                                     </span>
-                                    <button
-                                        className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm flex items-center gap-1 group/btn"
-                                    >
-                                        Read Details
+                                    <span className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm flex items-center gap-1 group/btn">
+                                        Read Article
                                         <svg className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                         </svg>
-                                    </button>
+                                    </span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 ))}
             </div>
@@ -133,13 +116,6 @@ export default function ProfessionDetail() {
                     ← Browse More Careers
                 </Link>
             </div>
-
-            {/* Step Detail Modal */}
-            <StepDetailModal
-                isOpen={isModalOpen}
-                onClose={closeStepDetail}
-                step={selectedStep}
-            />
         </div>
     );
 }
