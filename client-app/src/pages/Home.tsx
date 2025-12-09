@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react';
-import { getProfessions } from '../services/api';
+import { getProfessions, getMyProfessions, type UserProfessionDto } from '../services/api';
 import type { Profession } from '../types/profession';
 import ProfessionCard from '../components/ProfessionCard';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
+    const { user } = useAuth();
     const [professions, setProfessions] = useState<Profession[]>([]);
+    const [myProfessions, setMyProfessions] = useState<UserProfessionDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchProfessions = async () => {
+        const loadData = async () => {
             try {
-                const data = await getProfessions();
-                setProfessions(data);
+                // Fetch all professions
+                const allProfs = await getProfessions();
+                setProfessions(allProfs);
+
+                // If logged in, fetch user's progress
+                if (user) {
+                    try {
+                        const myProfs = await getMyProfessions();
+                        setMyProfessions(myProfs);
+                    } catch (e) {
+                        console.error("Failed to load user progress", e);
+                    }
+                }
             } catch (err) {
                 console.error("Failed to fetch professions:", err);
                 setError("Could not connect to the API. Is Backend running?");
@@ -21,8 +35,8 @@ export default function Home() {
             }
         };
 
-        fetchProfessions();
-    }, []);
+        loadData();
+    }, [user]);
 
     return (
         <>
@@ -48,9 +62,17 @@ export default function Home() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {professions.map((prof) => (
-                            <ProfessionCard key={prof.id} profession={prof} />
-                        ))}
+                        {professions.map((prof) => {
+                            const userProf = myProfessions.find(mp => mp.professionId === prof.id);
+                            return (
+                                <ProfessionCard
+                                    key={prof.id}
+                                    profession={prof}
+                                    isEnrolled={!!userProf}
+                                    progress={userProf?.progressPercentage || 0}
+                                />
+                            );
+                        })}
                     </div>
                 )}
             </div>

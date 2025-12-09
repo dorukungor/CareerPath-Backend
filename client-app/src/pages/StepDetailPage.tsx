@@ -21,8 +21,7 @@ export default function StepDetailPage() {
                     const foundStep = data.roadmapSteps.find(s => s.id === stepId);
                     if (foundStep) {
                         setStep(foundStep);
-                        // TODO: Check if step is actually completed from backend
-                        setIsCompleted(false);
+                        setIsCompleted(foundStep.isCompleted);
                     } else {
                         setError('Step not found in this profession.');
                     }

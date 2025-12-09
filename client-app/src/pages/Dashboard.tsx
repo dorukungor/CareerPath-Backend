@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyProfessions, type UserProfessionDto } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import ProgressBar from '../components/ProgressBar';
 
 const Dashboard: React.FC = () => {
     const { isAuthenticated } = useAuth();
@@ -147,17 +148,12 @@ const Dashboard: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="mb-4">
-                                <div className="flex justify-between text-sm text-gray-500 mb-1">
-                                    <span>İlerleme</span>
-                                    <span className="font-medium text-gray-900">%{prof.progressPercentage}</span>
+                            <div className="mb-6">
+                                <div className="flex justify-between text-sm text-gray-500 mb-2">
+                                    <span className="font-medium text-slate-700">İlerleme Durumu</span>
+                                    <span className="font-bold text-slate-900">%{prof.progressPercentage} Tamamlandı</span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div
-                                        className="bg-emerald-600 h-2.5 rounded-full transition-all duration-500 ease-out"
-                                        style={{ width: `${prof.progressPercentage}%` }}
-                                    ></div>
-                                </div>
+                                <ProgressBar value={prof.progressPercentage} height="h-3" />
                             </div>
 
                             <div className="flex justify-between items-center text-sm text-gray-500 mt-4 pt-4 border-t border-gray-100">

@@ -13,6 +13,7 @@ export interface RoadmapStep {
     description: string;
     orderIndex: number;
     mustKnow: boolean;
+    isCompleted: boolean;
     resources: Resource[];
 }
 

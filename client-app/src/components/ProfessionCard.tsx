@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 
 interface ProfessionCardProps {
     profession: Profession;
+    isEnrolled?: boolean;
+    progress?: number;
 }
 
-const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession }) => {
+const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession, isEnrolled = false, progress = 0 }) => {
     const getDifficultyColor = (level: string) => {
         switch (level.toLowerCase()) {
             case 'easy': return 'bg-green-100 text-green-800 border-green-200';
@@ -52,12 +54,23 @@ const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession }) => {
                 </div>
 
                 <div className="mt-auto pt-6">
-                    <Link to={`/profession/${profession.id}`} className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition border border-gray-200 group-hover:border-blue-300 group-hover:text-blue-600 flex items-center justify-center gap-2">
-                        View Roadmap
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </Link>
+                    <div className="mt-auto pt-6">
+                        {isEnrolled ? (
+                            <Link to={`/profession/${profession.id}`} className="w-full py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg transition border border-emerald-200 flex items-center justify-center gap-2 group-hover:shadow-md">
+                                Devam Et (%{progress})
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </Link>
+                        ) : (
+                            <Link to={`/profession/${profession.id}`} className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition border border-gray-200 group-hover:border-blue-300 group-hover:text-blue-600 flex items-center justify-center gap-2">
+                                Yol Haritasını İncele
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </Link>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
