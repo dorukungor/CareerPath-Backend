@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { Profession } from '../types/profession';
-import { getProfessionById } from '../services/api';
+import { getProfessionById, followProfession, unfollowProfession, getMyProfessions } from '../services/api'; // Added imports
+import { useAuth } from '../context/AuthContext'; // Added import
 
 export default function ProfessionDetail() {
     const { id } = useParams<{ id: string }>();
@@ -9,12 +10,22 @@ export default function ProfessionDetail() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    // Follow logic states
+    const { user } = useAuth();
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
     useEffect(() => {
         if (id) {
+            // Fetch profession detailed info
             getProfessionById(id)
                 .then(data => {
                     setProfession(data);
                     setLoading(false);
+                    // Check if already following (if user is logged in)
+                    if (user && data) {
+                        checkIfFollowing(data.id);
+                    }
                 })
                 .catch(err => {
                     console.error('Failed to fetch profession:', err);
@@ -22,7 +33,37 @@ export default function ProfessionDetail() {
                     setLoading(false);
                 });
         }
-    }, [id]);
+    }, [id, user]);
+
+    const checkIfFollowing = async (professionId: string) => {
+        try {
+            const myProfessions = await getMyProfessions();
+            const exists = myProfessions.some(p => p.professionId === professionId);
+            setIsFollowing(exists);
+        } catch (error) {
+            console.error('Failed to check following status', error);
+        }
+    }
+
+    const handleFollowToggle = async () => {
+        if (!profession || !user) return;
+
+        setIsProcessing(true);
+        try {
+            if (isFollowing) {
+                await unfollowProfession(profession.id);
+                setIsFollowing(false);
+            } else {
+                await followProfession(profession.id);
+                setIsFollowing(true);
+            }
+        } catch (error) {
+            console.error('Failed to update follow status', error);
+            alert('İşlem sırasında bir hata oluştu.');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -51,16 +92,30 @@ export default function ProfessionDetail() {
                     <h1 className="text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">{profession.title}</h1>
                     <p className="text-slate-500 text-lg">Detailed step-by-step roadmap to master this career path.</p>
                 </div>
-                <div className="flex gap-3">
-                    <span className="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
-                        💰 ${profession.avgSalary.toLocaleString()}/yr
-                    </span>
-                    <span className={`px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${profession.difficultyLevel === 'Hard' ? 'bg-rose-100 text-rose-800' :
-                        profession.difficultyLevel === 'Medium' ? 'bg-amber-100 text-amber-800' :
-                            'bg-sky-100 text-sky-800'
-                        }`}>
-                        🏋️ {profession.difficultyLevel}
-                    </span>
+                <div className="flex flex-col items-end gap-3">
+                    <div className="flex gap-3">
+                        <span className="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
+                            💰 ${profession.avgSalary.toLocaleString()}/yr
+                        </span>
+                        <span className={`px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${profession.difficultyLevel === 'Hard' ? 'bg-rose-100 text-rose-800' :
+                            profession.difficultyLevel === 'Medium' ? 'bg-amber-100 text-amber-800' :
+                                'bg-sky-100 text-sky-800'
+                            }`}>
+                            🏋️ {profession.difficultyLevel}
+                        </span>
+                    </div>
+                    {user && (
+                        <button
+                            onClick={handleFollowToggle}
+                            disabled={isProcessing}
+                            className={`px-6 py-2 rounded-lg font-medium shadow-sm transition-all ${isFollowing
+                                    ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
+                                }`}
+                        >
+                            {isProcessing ? 'Processing...' : isFollowing ? 'Takipten Çık' : 'Takip Et'}
+                        </button>
+                    )}
                 </div>
             </div>
 

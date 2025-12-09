@@ -4,6 +4,8 @@ import ProfessionDetail from './pages/ProfessionDetail';
 import StepDetailPage from './pages/StepDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import Dashboard from './pages/Dashboard'; // Added
+import ProtectedRoute from './components/ProtectedRoute'; // Added
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const Header = () => {
@@ -20,6 +22,9 @@ const Header = () => {
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
+                <Link to="/dashboard" className="text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors">
+                  Kariyerlerim
+                </Link>
                 <span className="text-sm font-medium text-gray-700">Hoşgeldin, {user?.fullName}</span>
                 <button
                   onClick={logout}
@@ -57,6 +62,11 @@ function App() {
             <Route path="/profession/:professionId/step/:stepId" element={<StepDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
           </Routes>
         </div>
       </Router>

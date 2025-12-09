@@ -11,6 +11,29 @@ const api = axios.create({
     },
 });
 
+// Request interceptor to add auth token
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+export interface UserProfessionDto {
+    professionId: string;
+    title: string;
+    slug: string;
+    progressPercentage: number;
+    isCompleted: boolean;
+    startedAt: string;
+}
+
 export const getProfessions = async (): Promise<Profession[]> => {
     const response = await api.get<Profession[]>('/professions');
     return response.data;
@@ -18,6 +41,19 @@ export const getProfessions = async (): Promise<Profession[]> => {
 
 export const getProfessionById = async (id: string): Promise<Profession> => {
     const response = await api.get<Profession>(`/professions/${id}`);
+    return response.data;
+};
+
+export const followProfession = async (professionId: string): Promise<void> => {
+    await api.post(`/user-professions/${professionId}`);
+};
+
+export const unfollowProfession = async (professionId: string): Promise<void> => {
+    await api.delete(`/user-professions/${professionId}`);
+};
+
+export const getMyProfessions = async (): Promise<UserProfessionDto[]> => {
+    const response = await api.get<UserProfessionDto[]>('/user-professions');
     return response.data;
 };
 
