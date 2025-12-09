@@ -16,4 +16,9 @@ export const getProfessions = async (): Promise<Profession[]> => {
     return response.data;
 };
 
+export const getProfessionById = async (id: string): Promise<Profession> => {
+    const response = await api.get<Profession>(`/professions/${id}`);
+    return response.data;
+};
+
 export default api;

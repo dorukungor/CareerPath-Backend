@@ -52,7 +52,7 @@ const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession }) => {
                 </div>
 
                 <div className="mt-auto pt-6">
-                    <Link to={`/roadmap/${profession.id}`} className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition border border-gray-200 group-hover:border-blue-300 group-hover:text-blue-600 flex items-center justify-center gap-2">
+                    <Link to={`/profession/${profession.id}`} className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition border border-gray-200 group-hover:border-blue-300 group-hover:text-blue-600 flex items-center justify-center gap-2">
                         View Roadmap
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
