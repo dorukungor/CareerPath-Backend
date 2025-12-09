@@ -1,5 +1,7 @@
 export interface Resource {
     id: string;
+    title: string;
+    type: string;
     url: string;
     isAffiliate: boolean;
 }
@@ -7,6 +9,7 @@ export interface Resource {
 export interface RoadmapStep {
     id: string;
     title: string;
+    summary: string;
     description: string;
     orderIndex: number;
     mustKnow: boolean;

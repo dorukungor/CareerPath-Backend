@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import type { Profession } from '../types/profession';
+import type { Profession, RoadmapStep } from '../types/profession';
 import { getProfessionById } from '../services/api';
+import StepDetailModal from '../components/StepDetailModal';
 
 export default function ProfessionDetail() {
     const { id } = useParams<{ id: string }>();
     const [profession, setProfession] = useState<Profession | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    // Modal State
+    const [selectedStep, setSelectedStep] = useState<RoadmapStep | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -23,6 +28,16 @@ export default function ProfessionDetail() {
                 });
         }
     }, [id]);
+
+    const openStepDetail = (step: RoadmapStep) => {
+        setSelectedStep(step);
+        setIsModalOpen(true);
+    };
+
+    const closeStepDetail = () => {
+        setIsModalOpen(false);
+        setTimeout(() => setSelectedStep(null), 300); // Clear after animation roughly
+    };
 
     if (loading) {
         return (
@@ -69,12 +84,15 @@ export default function ProfessionDetail() {
                 {profession.roadmapSteps?.map((step, index) => (
                     <div key={step.id} className="relative pl-8 md:pl-12 group">
                         {/* Step Marker */}
-                        <div className="absolute -left-[22px] bg-white rounded-full border-4 border-indigo-600 h-10 w-10 flex items-center justify-center font-bold text-indigo-600 shadow-md group-hover:scale-110 transition-transform duration-300">
+                        <div className="absolute -left-[22px] bg-white rounded-full border-4 border-indigo-600 h-10 w-10 flex items-center justify-center font-bold text-indigo-600 shadow-md group-hover:scale-110 transition-transform duration-300 z-10">
                             {index + 1}
                         </div>
 
                         {/* Content Card */}
-                        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+                        <div
+                            className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                            onClick={() => openStepDetail(step)}
+                        >
                             {/* Step Header */}
                             <div className="bg-gradient-to-r from-indigo-50 to-white px-6 py-4 border-b border-indigo-50 flex justify-between items-center">
                                 <h3 className="text-xl font-bold text-slate-800">{step.title}</h3>
@@ -86,27 +104,24 @@ export default function ProfessionDetail() {
                             </div>
 
                             <div className="p-6">
-                                <p className="text-gray-600 leading-relaxed mb-6">{step.description}</p>
+                                {/* Summary instead of full Description */}
+                                <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                                    {step.summary || step.description?.substring(0, 150) + "..."}
+                                </p>
 
-                                {/* Resources */}
-                                {step.resources && step.resources.length > 0 && (
-                                    <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                                        <h4 className="text-sm font-bold text-slate-700 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                            <span>📚</span> Recommended Resources
-                                        </h4>
-                                        <ul className="space-y-2">
-                                            {step.resources.map(res => (
-                                                <li key={res.id}>
-                                                    <a href={res.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 hover:underline transition-colors group/link">
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                                        {res.url}
-                                                        {res.isAffiliate && <span className="text-xs bg-yellow-100 text-yellow-800 px-1.5 rounded ml-2 border border-yellow-200">Ad</span>}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+                                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
+                                    <span className="text-sm text-gray-400 font-medium">
+                                        ⏱️ 5 min read
+                                    </span>
+                                    <button
+                                        className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm flex items-center gap-1 group/btn"
+                                    >
+                                        Read Details
+                                        <svg className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -118,6 +133,13 @@ export default function ProfessionDetail() {
                     ← Browse More Careers
                 </Link>
             </div>
+
+            {/* Step Detail Modal */}
+            <StepDetailModal
+                isOpen={isModalOpen}
+                onClose={closeStepDetail}
+                step={selectedStep}
+            />
         </div>
     );
 }
